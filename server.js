@@ -72,6 +72,7 @@ class Link extends ThingWithId
   {         
     super(id,name);
     this.urlthing;
+    this.type;
   }
 }
 
@@ -145,11 +146,12 @@ function addSth(req, res, daFile, classtype) {
   linkCopy.id = parseInt(req.body.id);
   linkCopy.name = req.body.name;
   linkCopy.urlthing = req.body.urlthing;
+  linkCopy.type = req.body.type;
   workCopy.id = parseInt(req.body.id);
   workCopy.name = req.body.name;
   workCopy.description = req.body.description;
   workCopy.date = req.body.date;
-  console.log("req.body: "+req.body.id, req.body.name, req.body.urlthing);
+  //console.log("req.body: "+req.body.id, req.body.name, req.body.urlthing);
 	
 	fs.readFile(daFile, function (err, data) {
 		let things = [];
@@ -176,21 +178,30 @@ function addSth(req, res, daFile, classtype) {
 function updateSth(req, res, daFile, classtype) {
   let linkCopy = new Link();
   let workCopy = new Work();
-	if (linkCopy instanceof classtype)
-  {
-    const { id, name, urlthing } = req.body;
-    const newThing = {id:parseInt(id), name, urlthing};
-  }
-  else if (linkCopy instanceof classtype)
-  {
-    const { id, name, description, date } = req.body;
-    const newThing = {id:parseInt(id), name, description, date};
-  }
+  let aThing;
+  console.log("HERE", classtype);
+  let id = req.body.id;
+  linkCopy.id = parseInt(req.body.id);
+  linkCopy.name = req.body.name;
+  linkCopy.urlthing = req.body.urlthing;
+  linkCopy.type = req.body.type;
+  workCopy.id = parseInt(req.body.id);
+  workCopy.name = req.body.name;
+  workCopy.description = req.body.description;
+  workCopy.date = req.body.date;
+  if (linkCopy instanceof classtype)
+    {
+      aThing=linkCopy;
+    }
+		else
+    {
+      aThing=workCopy;
+    }
 
 	fs.readFile(daFile, function (err, data) {
 		let things = [];
 		if (!err) things = JSON.parse(data);
-		const THEIndex = things.findIndex(p=>p.id===aPerson.id);
+		const THEIndex = things.findIndex(p=>p.id===aThing.id);
 		if (THEIndex < 0 ) {
 			res.status(200).json(`Cannot find ID: ${id}`);
 			return;
